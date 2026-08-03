@@ -1,0 +1,22 @@
+apiVersion: pipecd.dev/v1beta1
+kind: Application
+spec:
+  name: simple
+  labels:
+    env: example
+  eventWatcher:
+  - handler:
+      config:
+        replacements:
+        - file: deployment.yaml
+          yamlField: $.spec.template.spec.containers[0].image
+      type: GIT_UPDATE
+    matcher:
+      name: simple-image-update
+  plugins:
+    kubernetes:
+      input:
+        manifests:
+          - deployment.yaml
+          - service.yaml
+        kubectlVersion: 1.32.2
